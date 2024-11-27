@@ -2,6 +2,7 @@ package com.own.foodservice;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,8 +16,8 @@ public class FoodController {
 
     private final FoodService foodService;
 
-    @PostMapping
-    public ResponseEntity<String> createFood(@RequestBody FoodDTO food) {
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<String> createFood(@ModelAttribute  FoodDTO food) {
 
 
         // Logic to create a new food item
@@ -32,16 +33,24 @@ public class FoodController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Food> getFoodById(@PathVariable("id") Long id) {
+    public ResponseEntity<Food> getFoodById(@PathVariable(value = "id") Long id) {
         // Logic to get food item by ID
-        return id != null ? ResponseEntity.ok(foodService.getFood(id)) : ResponseEntity.ok(foodService.getFood());
+        return ResponseEntity.ok(foodService.getFood(id));
+
+    }
+
+    @GetMapping("/roll")
+    public ResponseEntity<Food> rollFood(@RequestParam(value = "difficulty", defaultValue = "EASY", required = false) Difficulty difficulty) {
+        // Randomly get food
+        System.out.println(difficulty);
+        return ResponseEntity.ok(foodService.getFood(difficulty));
 
     }
 
     @GetMapping
     public ResponseEntity<List<Food>> getAllFoods(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "0", value = "page") int page,
+            @RequestParam(defaultValue = "10", value = "size") int size,
             FoodFilter filter
     ) {
         return ResponseEntity.ok(foodService.getFood(page, size, filter));

@@ -14,10 +14,10 @@ public interface FoodService {
     void updateFood(Long id, Food food);
 
     /***
-     * Get food randomly
+     * Get food randomly by difficulty level
      * @return Food
      */
-    Food getFood();
+    Food getFood(Difficulty difficulty);
 
     Food getFood(Long id);
 

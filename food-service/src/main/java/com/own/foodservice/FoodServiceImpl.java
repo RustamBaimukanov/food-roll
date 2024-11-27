@@ -38,13 +38,13 @@ public class FoodServiceImpl implements FoodService{
      * @return Food
      */
     @Override
-    public Food getFood() {
+    public Food getFood(Difficulty difficulty) {
         long count = repository.count();
         if (count == 0) {
             throw new RuntimeException(Constants.TEMP_EXCEPTION);
         }
         int randomIndex = ThreadLocalRandom.current().nextInt((int) count);
-        return repository.findAll().stream()
+        return repository.findAllByDifficulty(difficulty).stream()
                 .skip(randomIndex)
                 .findFirst().orElseThrow(() -> new RuntimeException(Constants.TEMP_EXCEPTION));
     }

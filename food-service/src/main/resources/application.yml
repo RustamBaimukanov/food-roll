@@ -41,8 +41,10 @@ openapi:
 springdoc:
   api-docs:
     path: /food-service/v3/api-docs
+    enabled: true
   swagger-ui:
     path: /food-service/swagger-ui.html
+    enabled: true
 
 logging:
   level:

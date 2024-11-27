@@ -17,6 +17,7 @@ public abstract class BaseEntity {
     @PrePersist
     protected void onCreate() {
         this.createdDate = LocalDateTime.now();
+        this.updatedDate = LocalDateTime.now();
     }
 
     @PreUpdate
