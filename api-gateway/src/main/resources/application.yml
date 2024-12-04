@@ -4,12 +4,21 @@ server:
 spring:
   application:
     name: api-gateway
+  main:
+    web-application-type: reactive
   cloud:
     gateway:
       discovery:
         locator:
           enabled: true
           lower-case-service-id: true
+      globalcors:
+        add-to-simple-url-handler-mapping: true
+        cors-configurations:
+          '[/**]':
+            allowed-origins: "*"
+            allowedMethods: GET, POST, PUT, DELETE, OPTIONS
+            allowedHeaders: "*"
 
 eureka:
   client:
@@ -32,4 +41,6 @@ springdoc:
         name: API Gateway Service
       - url: /food-service/v3/api-docs
         name: Food Service
+      - url: /auth-service/v3/api-docs
+        name: Auth Service
 

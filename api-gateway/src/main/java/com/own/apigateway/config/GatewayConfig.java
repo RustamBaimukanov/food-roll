@@ -15,8 +15,12 @@ public class GatewayConfig {
                         .uri("lb://greetings-service"))
                 .route("food-service", r -> r.path("/foods/**")
                         .uri("lb://food-service"))
-                .route(r -> r.path("/food-service/v3/api-docs").uri("lb://food-service"))
-
+                .route(r -> r.path("/food-service/v3/api-docs")
+                        .uri("lb://food-service"))
+                .route("auth-service", r -> r.path("auth/**")
+                        .uri("lb://auth-service"))
+                .route(r -> r.path("auth-service/v3/api-docs")
+                        .uri("lb://auth-service"))
                 .build();
     }
 }

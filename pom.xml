@@ -10,6 +10,7 @@
     <modules>
         <module>discovery-service</module>
         <module>api-gateway</module>
+        <module>auth-service</module>
         <module>greetings-service</module>
         <module>food-service</module>
     </modules>
