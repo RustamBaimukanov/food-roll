@@ -15,7 +15,9 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity.authorizeHttpRequests
                         (auth ->
-                                auth.requestMatchers("auth-service/v3/api-docs").permitAll()
+                                auth
+                                        .requestMatchers("auth-service/v3/api-docs").permitAll()
+                                        .requestMatchers("auth/test").permitAll()
                                         .anyRequest().authenticated()
                         )
                 .oauth2Login(Customizer.withDefaults())

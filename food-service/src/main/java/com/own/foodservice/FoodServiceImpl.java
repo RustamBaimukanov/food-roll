@@ -4,12 +4,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Service
@@ -19,18 +21,17 @@ public class FoodServiceImpl implements FoodService{
     private final FoodRepository repository;
 
     @Override
-    public void createFood(Food food) {
-        repository.save(food);
+    public Mono<Food> createFood(Food food) {
+        return repository.save(food);
     }
 
     @Override
     @Transactional
-    public void updateFood(Long id, Food food) {
-        Food updatableFood = repository.findById(id).orElseThrow(() -> new RuntimeException(Constants.TEMP_EXCEPTION));
-        updatableFood.setName(food.getName());
-        updatableFood.setImage(food.getImage());
-        updatableFood.setImageFileExtension(food.getImageFileExtension());
-        updatableFood.setDifficulty(food.getDifficulty());
+    public Mono<Food> updateFood(Long id, Food food) {
+        return repository.findById(id)
+                .doOnNext(element ->
+                        new Food(id, food.getName(), food.getDifficulty(), food.getImage(), food.getImageFileExtension()))
+                .flatMap(repository::save);
     }
 
     /***
@@ -38,28 +39,30 @@ public class FoodServiceImpl implements FoodService{
      * @return Food
      */
     @Override
-    public Food getFood(Difficulty difficulty) {
-        long count = repository.count();
-        if (count == 0) {
-            throw new RuntimeException(Constants.TEMP_EXCEPTION);
-        }
-        int randomIndex = ThreadLocalRandom.current().nextInt((int) count);
-        return repository.findAllByDifficulty(difficulty).stream()
-                .skip(randomIndex)
-                .findFirst().orElseThrow(() -> new RuntimeException(Constants.TEMP_EXCEPTION));
+    public Mono<Food> getFood(Difficulty difficulty) {
+
+//        return repository.findAllByDifficulty(difficulty).stream()
+//                .skip(randomIndex)
+//                .findFirst().orElseThrow(() -> new RuntimeException(Constants.TEMP_EXCEPTION));
+        return Mono.from(repository.findAllByDifficulty(difficulty).skip(new Random().nextInt(5)));
     }
 
     @Override
-    public Food getFood(Long id) {
-        return repository.findById(id).orElseThrow(() -> new RuntimeException(Constants.TEMP_EXCEPTION));
+    public Mono<Food> getFood(Long id) {
+        //return repository.findById(id).orElseThrow(() -> new RuntimeException(Constants.TEMP_EXCEPTION));
+        return repository.findById(id);
     }
 
     @Override
-    public List<Food> getFood(int page, int size, FoodFilter filter) {
-        Pageable pageable = PageRequest.of(page, size);
-        Specification<Food> specification = FoodSpecification.filterByFoodProperties(filter);
-        Page<Food> foods = repository.findAll(specification, pageable);
-        return foods.getContent();
+    public Flux<Food> getFood(int page, int size) {
+//        Pageable pageable = PageRequest.of(page, size);
+//        Specification<Food> specification = FoodSpecification.filterByFoodProperties(filter);
+//        Page<Food> foods = repository.findAll(specification, pageable);
+//        return foods.getContent();
+        return repository.findAll()
+                .skip(page*size)
+                .take(size)
+                .map(food -> new Food(food.getId(), food.getName(), food.getDifficulty(), null, null));
     }
 
     @Override

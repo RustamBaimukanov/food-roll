@@ -1,0 +1,43 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: food-service
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/food_db
+    username: suneclipse
+    password: suneclipse
+    pool:
+      enabled: true
+#eureka:
+#  client:
+#    service-url:
+#      defaultZone: http://localhost:8761/eureka/
+#  instance:
+#    prefer-ip-address: true
+#
+#openapi:
+#  service:
+#    title: food-service doc
+#    version: 1.0.0
+#    url: http://localhost:8080
+#
+#springdoc:
+#  api-docs:
+#    path: /food-service/v3/api-docs
+#    enabled: true
+#  swagger-ui:
+#    path: /food-service/swagger-ui.html
+#    enabled: true
+
+logging:
+  level:
+    io:
+      r2dbc:
+        pool: DEBUG
+    org:
+      springframework:
+        data:
+          r2dbc: DEBUG
+        r2dbc: DEBUG

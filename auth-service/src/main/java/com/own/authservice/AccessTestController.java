@@ -11,4 +11,14 @@ public class AccessTestController {
     public String hello() {
         return "Unlogged: Open-source tool for Java devs to instantly mock DB/APIs, auto-generate unit tests from API traffic, monitor method performance, and save/replay method inputs & outputs. Integrates with CI for code coverage. Install to boost your Java DevOps! ";
     }
+
+    @GetMapping
+    public String empty() {
+        return "empty";
+    }
+
+    @GetMapping("/test")
+    public String test() {
+        return "test";
+    }
 }
