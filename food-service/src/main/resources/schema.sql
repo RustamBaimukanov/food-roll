@@ -1,6 +1,6 @@
 create table if not exists food
 (
-    id                   bigint not null
+    id                   bigint default nextval('food_seq'::regclass) not null
     primary key,
     created_date         timestamp(6),
     updated_date         timestamp(6),

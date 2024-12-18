@@ -1,8 +1,10 @@
 package com.own.foodservice;
 
 import lombok.SneakyThrows;
+import org.springframework.core.io.buffer.DataBufferUtils;
 import reactor.core.publisher.Mono;
 
+import java.awt.image.DataBuffer;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,21 +16,20 @@ public class FoodMapper {
         Food food = new Food();
         food.setName(foodDTO.name());
         food.setDifficulty(foodDTO.difficulty());
-        List<String> arr = new ArrayList<>();
-        arr.add("!");
-        arr.add("#@2");
-        arr.stream()
-
         if (foodDTO.image() != null) {
-            return foodDTO.image().content()
-                    .reduce(ByteBuffer::put)
+            return DataBufferUtils.join(foodDTO.image().content()) // Собираем весь контент
                     .map(buffer -> {
-                        food.setImage(buffer.array());
-                        food.setImageFileExtension(foodDTO.image().headers().getContentType().toString());
+                        byte[] bytes = new byte[buffer.readableByteCount()];
+                        buffer.read(bytes);
+                        DataBufferUtils.release(buffer); // Освобождаем буфер
+                        return bytes;
+                    })
+                    .map(bytes -> {
+                        food.setImage(bytes); // Устанавливаем байты изображения
+                        food.setImageFileExtension(String.valueOf(foodDTO.image().headers().getContentType()));
                         return food;
                     });
         }
-
         return Mono.just(food);
     }
 }

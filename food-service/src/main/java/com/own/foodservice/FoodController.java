@@ -20,26 +20,22 @@ public class FoodController {
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public Mono<Food> createFood(@ModelAttribute FoodDTO food) {
-        // Logic to create a new food item
-        return foodService.createFood(FoodMapper.mapToFood(food));
+        return FoodMapper.mapToFood(food).flatMap(foodService::createFood);
     }
 
     @PutMapping("/{id}")
     public Mono<Food> updateFood(@PathVariable("id") Long id, @RequestBody FoodDTO food) {
-        // Logic to update food item by ID
-        return foodService.updateFood(id, FoodMapper.mapToFood(food));
+        return FoodMapper.mapToFood(food).flatMap(updFood -> foodService.updateFood(id, updFood));
     }
 
     @GetMapping("/{id}")
     public Mono<Food> getFoodById(@PathVariable(value = "id") Long id) {
-        // Logic to get food item by ID
         return foodService.getFood(id);
 
     }
 
     @GetMapping("/roll")
     public Mono<Food> rollFood(@RequestParam(value = "difficulty", defaultValue = "EASY", required = false) Difficulty difficulty) {
-        // Randomly get food
         return foodService.getFood(difficulty);
 
     }
@@ -55,8 +51,6 @@ public class FoodController {
 
     @DeleteMapping("/{id}")
     public Mono<Void> deleteFood(@PathVariable("id") Long id) {
-        // Logic to delete food item by ID
-        foodService.removeFood(id);
-        return Mono.empty();
+        return foodService.removeFood(id);
     }
 }

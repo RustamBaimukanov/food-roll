@@ -66,7 +66,7 @@ public class FoodServiceImpl implements FoodService{
     }
 
     @Override
-    public void removeFood(Long id) {
-        repository.deleteById(id);
+    public Mono<Void> removeFood(Long id) {
+        return repository.deleteById(id);
     }
 }

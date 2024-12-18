@@ -26,7 +26,7 @@ public interface FoodService {
 
     Flux<Food> getFood(int page, int size);
 
-    void removeFood(Long id);
+    Mono<Void> removeFood(Long id);
 
 
 }
