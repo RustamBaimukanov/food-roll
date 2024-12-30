@@ -4,6 +4,11 @@ server:
 spring:
   application:
     name: food-service
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:7080/realms/ruzgar
   r2dbc:
     url: r2dbc:postgresql://localhost:5432/food_db
     username: suneclipse
